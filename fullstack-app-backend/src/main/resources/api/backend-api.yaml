@@ -1,0 +1,38 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /demos:
+    post:
+      tags:
+        - demo-controller
+      operationId: createDemo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDemoRequestDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+components:
+  schemas:
+    CreateDemoRequestDto:
+      required:
+        - description
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
