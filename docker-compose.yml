@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  database:
+    image: postgres
+    container_name: fullstack-app-database
+    init: true
+    ports:
+      - "${POSTGRES_DATABASE_PORT}:5432"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DATABASE_NAME}
+      - POSTGRES_USER=${POSTGRES_DATABASE_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_DATABASE_PASSWORD}
