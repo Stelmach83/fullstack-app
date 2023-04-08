@@ -11,8 +11,8 @@
     <name>Fullstack app</name>
 
     <modules>
-        <module>fullstack-app-frontend</module>
-        <module>fullstack-app-backend</module>
+        <module>frontend</module>
+        <module>backend</module>
     </modules>
 
     <properties>

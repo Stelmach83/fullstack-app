@@ -10,7 +10,7 @@
         <version>0.0.1</version>
     </parent>
 
-    <artifactId>fullstack-app-backend</artifactId>
+    <artifactId>backend</artifactId>
     <version>0.0.1</version>
     <name>Fullstack app backend</name>
 
@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>eu.stelmaszak.fullstack-app</groupId>
-            <artifactId>fullstack-app-frontend</artifactId>
+            <artifactId>frontend</artifactId>
             <version>0.0.1</version>
             <scope>runtime</scope>
         </dependency>

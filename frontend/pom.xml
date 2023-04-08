@@ -10,7 +10,7 @@
         <version>0.0.1</version>
     </parent>
 
-    <artifactId>fullstack-app-frontend</artifactId>
+    <artifactId>frontend</artifactId>
     <version>0.0.1</version>
     <name>Fullstack app frontend</name>
 

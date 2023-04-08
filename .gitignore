@@ -1,3 +1,5 @@
 *.iml
 .idea
 */target
+/db-data-app/
+/db-data-kc/
