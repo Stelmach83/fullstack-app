@@ -1,5 +1,6 @@
 package eu.stelmaszak.fullstackapp.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,8 +10,6 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,22 +18,35 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Log
 @Configuration
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     @Value("${cors.allowed-origins}")
     private String[] allowedOrigins;
 
+    private static final String[] AUTH_WHITELIST = {
+        "/swagger-resources",
+        "/swagger-resources/**",
+        "/configuration/ui",
+        "/configuration/security",
+        "/swagger-ui.html",
+        "/webjars/**",
+        "/v3/api-docs/**",
+        "/api/public/**",
+        "/api/public/authenticate",
+        "/actuator/*",
+        "/swagger-ui/**"
+    };
+
+    private final GrantedAuthoritiesExtractor grantedAuthoritiesExtractor;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        log.info("CORS Allowed Origins: " + Arrays.toString(allowedOrigins));
+        log.info("Set the following allowed CORS origins: " + Arrays.toString(allowedOrigins));
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(Arrays.asList("Access-Control-Allow-Headers", "Origin", "Content-Type",
             "Accept", "Authorization"));
@@ -46,35 +58,21 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth -> auth
-                .anyRequest()
-                .authenticated())
+                .requestMatchers(AUTH_WHITELIST).permitAll()
+                .anyRequest().authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2
                 .jwt()
-                .jwtAuthenticationConverter(grantedAuthoritiesExtractor()))
+                .jwtAuthenticationConverter(getJwtAuthenticationConverter()))
             .cors(Customizer.withDefaults())
             .build();
     }
 
-    private Converter<Jwt, AbstractAuthenticationToken> grantedAuthoritiesExtractor() {
+    private Converter<Jwt, AbstractAuthenticationToken> getJwtAuthenticationConverter() {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new GrantedAuthoritiesExtractor());
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesExtractor);
         return jwtAuthenticationConverter;
     }
 
-    static class GrantedAuthoritiesExtractor implements Converter<Jwt, Collection<GrantedAuthority>> {
-
-        @Override
-        public Collection<GrantedAuthority> convert(Jwt source) {
-            return ((Map<String, Collection<?>>) source.getClaims()
-                .getOrDefault("realm_access", Collections.emptyMap()))
-                .getOrDefault("roles", Collections.emptyList())
-                .stream()
-                .map(Object::toString)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-
-        }
-    }
 }
