@@ -46,7 +46,7 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        log.info("Set the following allowed CORS origins: " + Arrays.toString(allowedOrigins));
+        log.info("Set the following allowed CORS origins: %s".formatted(Arrays.toString(allowedOrigins)));
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(Arrays.asList("Access-Control-Allow-Headers", "Origin", "Content-Type",
             "Accept", "Authorization"));
