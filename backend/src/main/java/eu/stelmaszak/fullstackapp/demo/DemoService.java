@@ -1,6 +1,7 @@
 package eu.stelmaszak.fullstackapp.demo;
 
 import eu.stelmaszak.fullstackapp.gen.model.CreateDemoRequestDto;
+import eu.stelmaszak.fullstackapp.gen.model.CreatedDemoResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,9 @@ public class DemoService {
     private final DemoRepository demoRepository;
     private final DemoMapper demoMapper;
 
-    Boolean createDemo(CreateDemoRequestDto requestDto) {
+    CreatedDemoResponseDto createDemo(CreateDemoRequestDto requestDto) {
         DemoEntity savedDemo = saveDemo(requestDto);
-        return savedDemo.getId() != null;
+        return demoMapper.mapToCreatedDemoResponseDto(savedDemo);
     }
 
     @Transactional

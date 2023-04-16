@@ -23,7 +23,7 @@ paths:
           content:
             application/json:
               schema:
-                type: boolean
+                $ref: '#/components/schemas/CreatedDemoResponseDto'
 components:
   schemas:
     CreateDemoRequestDto:
@@ -32,6 +32,16 @@ components:
         - name
       type: object
       properties:
+        name:
+          type: string
+        description:
+          type: string
+    CreatedDemoResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
         name:
           type: string
         description:

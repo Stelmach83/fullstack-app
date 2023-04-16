@@ -2,6 +2,7 @@ package eu.stelmaszak.fullstackapp.demo;
 
 import eu.stelmaszak.fullstackapp.gen.api.DemoControllerApi;
 import eu.stelmaszak.fullstackapp.gen.model.CreateDemoRequestDto;
+import eu.stelmaszak.fullstackapp.gen.model.CreatedDemoResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +18,7 @@ public class DemoController implements DemoControllerApi {
     @PreAuthorize("hasAuthority('app_user')")
     @ResponseStatus(HttpStatus.OK)
     @Override
-    public Boolean createDemo(CreateDemoRequestDto createDemoRequestDto) {
+    public CreatedDemoResponseDto createDemo(CreateDemoRequestDto createDemoRequestDto) {
         return demoService.createDemo(createDemoRequestDto);
     }
 }
