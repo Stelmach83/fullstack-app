@@ -1,6 +1,7 @@
 package eu.stelmaszak.fullstackapp.config;
 
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -17,17 +18,21 @@ public class GrantedAuthoritiesExtractor implements Converter<Jwt, Collection<Gr
     private static final String ROLES = "roles";
     private static final String REALM_ACCESS = "realm_access";
 
+    @Nullable
     @Override
-    public Collection<GrantedAuthority> convert(Jwt source) {
+    public Collection<GrantedAuthority> convert(@Nullable Jwt source) {
         return getRolesFromRealmAccess(getRealmAccess(source)).stream()
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
-    private static Map<String, Collection<Object>> getRealmAccess(Jwt source) {
-        return (Map<String, Collection<Object>>) source.getClaims()
-            .getOrDefault(REALM_ACCESS, Collections.emptyMap());
+    private static Map<String, Collection<Object>> getRealmAccess(@Nullable Jwt source) {
+        if (source != null) {
+            return (Map<String, Collection<Object>>) source.getClaims()
+                .getOrDefault(REALM_ACCESS, Collections.emptyMap());
+        }
+        return Collections.emptyMap();
     }
 
     private static Collection<String> getRolesFromRealmAccess(Map<String, Collection<Object>> realmAccess) {
