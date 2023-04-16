@@ -18,7 +18,6 @@ public class DemoController implements DemoControllerApi {
     @ResponseStatus(HttpStatus.OK)
     @Override
     public Boolean createDemo(CreateDemoRequestDto createDemoRequestDto) {
-        demoService.createDemo(createDemoRequestDto);
-        return true;
+        return demoService.createDemo(createDemoRequestDto);
     }
 }
