@@ -18,7 +18,6 @@ public class GrantedAuthoritiesExtractor implements Converter<Jwt, Collection<Gr
     private static final String ROLES = "roles";
     private static final String REALM_ACCESS = "realm_access";
 
-    @Nullable
     @Override
     public Collection<GrantedAuthority> convert(@Nullable Jwt source) {
         return getRolesFromRealmAccess(getRealmAccess(source)).stream()
@@ -27,7 +26,7 @@ public class GrantedAuthoritiesExtractor implements Converter<Jwt, Collection<Gr
     }
 
     @SuppressWarnings("unchecked")
-    private static Map<String, Collection<Object>> getRealmAccess(@Nullable Jwt source) {
+    private static Map<String, Collection<Object>> getRealmAccess(Jwt source) {
         if (source != null) {
             return (Map<String, Collection<Object>>) source.getClaims()
                 .getOrDefault(REALM_ACCESS, Collections.emptyMap());
